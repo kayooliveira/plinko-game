@@ -26,6 +26,7 @@
         "prettier"
     ],
     "rules": {
+        "react/react-in-jsx-scope":"off",
         "prettier/prettier":"error",
         "space-before-function-paren":"off",
         "camelcase":"warn",
@@ -54,6 +55,9 @@
     
     },
     "settings": {
+        "import/parsers":{
+            "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
         "react": {
             "version": "detect"
         },
@@ -67,6 +71,7 @@
                 ]
             },
             "typescript": {
+                "alwaysTryTypes":true,
                 "project": "./tsconfig.json"
             }
         }
