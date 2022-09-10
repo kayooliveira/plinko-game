@@ -14,7 +14,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "rootDir": "./src",
+    "paths": {
+      "@sounds/*":[
+        "assets/sounds/*"
+      ],
+      "@images/*":[
+        "assets/img/*"
+      ]
+    }
   },
   "include": ["./src"]
 }
