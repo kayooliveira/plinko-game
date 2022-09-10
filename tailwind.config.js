@@ -3,11 +3,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "kowind": { // Kowind colors
-            primary: "#F970D2",
-            secondary: "#F6969C",
-            light: "#EBBDCD"
-        },
+          background: '#0f212e',
+          primary: '#213743',
+          secondary: '#3d5564',
+          text: '#F2F7FF',
+          green: '#1fff20',
+          greenDark: '#1ccc20',
       }
     },
   },
