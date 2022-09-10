@@ -2,7 +2,7 @@ export function currencyFormat(number: number) {
   return number.toLocaleString('pt-br', { maximumFractionDigits: 2 })
 }
 
-export function formatPoints(number: number) {
+export function formatPoints(number: number): string {
   const decPlaces = 2
   let newNumber: any = number
   const abbrev = [
