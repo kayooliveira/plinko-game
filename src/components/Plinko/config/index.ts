@@ -14,8 +14,8 @@ const engine = {
 }
 
 const world = {
-  width: 500,
-  height: 500
+  width: 390,
+  height: 390
 }
 
 export const config = {
