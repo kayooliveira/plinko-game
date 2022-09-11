@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/named
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { formatPoints } from 'utils/currencyFormat'
 
@@ -7,8 +8,8 @@ interface Wallet {
 }
 
 const INITIAL_STATE: Wallet = {
-  currentBalance: 1000,
-  currentBalanceFormatted: formatPoints(1000)
+  currentBalance: 100,
+  currentBalanceFormatted: formatPoints(100)
 }
 
 const EMPTY_STATE: Wallet = {
@@ -42,17 +43,23 @@ const sliceWallet = createSlice({
     incrementCurrentBalance(state, { payload }: PayloadAction<number>) {
       if (payload <= 0) return EMPTY_STATE
 
-      const newCurrentBalance = payload + state.currentBalance
+      const newCurrentBalance = state.currentBalance + payload
 
       if (newCurrentBalance <= 0) return EMPTY_STATE
-
-      return { ...state, currentBalance: newCurrentBalance }
+      const newWallet: Wallet = {
+        currentBalance: newCurrentBalance,
+        currentBalanceFormatted: formatPoints(newCurrentBalance)
+      }
+      return { ...state, ...newWallet }
     },
     decrementCurrentBalance(state, { payload }: PayloadAction<number>) {
-      const newCurrentBalance = payload - state.currentBalance
+      const newCurrentBalance = state.currentBalance - payload
       if (newCurrentBalance <= 0) return EMPTY_STATE
-
-      return { ...state, currentBalance: newCurrentBalance }
+      const newWallet: Wallet = {
+        currentBalance: newCurrentBalance,
+        currentBalanceFormatted: formatPoints(newCurrentBalance)
+      }
+      return { ...state, ...newWallet }
     }
   }
 })
