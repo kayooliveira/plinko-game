@@ -5,17 +5,18 @@ import {
   Composite,
   Engine,
   Events,
+  IEventCollision,
   Render,
   Runner,
   World
 } from 'matter-js'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useMediaQuery } from 'react-responsive'
 import { incrementCurrentBalance } from 'redux/slicers/sliceWallet'
 import { random } from 'utils/random'
 
 import { LinesType, MultiplierValues } from './@types'
+import { BetActions } from './components/BetActions'
 import { PlinkoBody } from './components/Body'
 import { config } from './config'
 import {
@@ -25,13 +26,11 @@ import {
 
 export function Plinko() {
   // #region States
-  const isMobile = useMediaQuery({
-    maxWidth: '860px'
-  })
   const dispatch = useDispatch()
+
   const engine = Engine.create()
-  const [isTesting, setIsTesting] = useState<boolean>(false)
   const [lines, setLines] = useState<LinesType>(16)
+  const [inGameBallsCount, setInGameBallsCount] = useState(0)
   const {
     pins: pinsConfig,
     colors,
@@ -40,13 +39,9 @@ export function Plinko() {
     world: worldConfig
   } = config
 
-  const worldWidth: number = isMobile
-    ? worldConfig.width / 1.3
-    : worldConfig.width
+  const worldWidth: number = worldConfig.width
 
-  const worldHeight: number = isMobile
-    ? worldConfig.height / 1.3
-    : worldConfig.height
+  const worldHeight: number = worldConfig.height
   // #endregion
 
   useEffect(() => {
@@ -83,7 +78,7 @@ export function Plinko() {
       render.canvas.remove()
       render.textures = {}
     }
-  }, [lines, isTesting, isMobile])
+  }, [lines])
 
   const pins: Body[] = []
 
@@ -103,7 +98,7 @@ export function Plinko() {
       const pin = Bodies.circle(pinX, pinY, pinsConfig.pinSize, {
         label: `pin-${i}`,
         render: {
-          fillStyle: 'white'
+          fillStyle: '#F5DCFF'
         },
         isStatic: true
       })
@@ -111,34 +106,51 @@ export function Plinko() {
     }
   }
 
-  const addBall = useCallback(() => {
-    const ballSound = new Audio(ballAudio)
-    ballSound.volume = 0.2
-    ballSound.currentTime = 0
-    ballSound.play()
+  function addInGameBall() {
+    if (inGameBallsCount > 15) return
+    setInGameBallsCount(prevState => prevState + 1)
+  }
 
-    const minBallX = worldWidth / 2 - pinsConfig.pinSize * 3 + pinsConfig.pinGap
-    const maxBallX =
-      worldWidth / 2 -
-      pinsConfig.pinSize * 3 -
-      pinsConfig.pinGap +
-      pinsConfig.pinGap / 2
+  function removeInGameBall() {
+    setInGameBallsCount(prevState => prevState - 1)
+  }
 
-    const ballX = random(minBallX, maxBallX)
+  const addBall = useCallback(
+    (ballValue: number) => {
+      addInGameBall()
+      const ballSound = new Audio(ballAudio)
+      ballSound.volume = 0.2
+      ballSound.currentTime = 0
+      ballSound.play()
 
-    const ball = Bodies.circle(ballX, 20, ballConfig.ballSize, {
-      restitution: 1,
-      friction: 0.6,
-      label: 'ball-2',
-      id: new Date().getTime(),
-      frictionAir: 0.05,
-      render: {
-        fillStyle: config.colors.orange
-      },
-      isStatic: false
-    })
-    Composite.add(engine.world, ball)
-  }, [lines, isMobile])
+      const minBallX =
+        worldWidth / 2 - pinsConfig.pinSize * 3 + pinsConfig.pinGap
+      const maxBallX =
+        worldWidth / 2 -
+        pinsConfig.pinSize * 3 -
+        pinsConfig.pinGap +
+        pinsConfig.pinGap / 2
+
+      const ballX = random(minBallX, maxBallX)
+      const ballColor = ballValue <= 0 ? colors.text : colors.purple
+      const ball = Bodies.circle(ballX, 20, ballConfig.ballSize, {
+        restitution: 1,
+        friction: 0.6,
+        label: `ball-${ballValue}`,
+        id: new Date().getTime(),
+        frictionAir: 0.05,
+        render: {
+          fillStyle: ballColor
+        },
+        collisionFilter: {
+          group: -1
+        },
+        isStatic: false
+      })
+      Composite.add(engine.world, ball)
+    },
+    [lines]
+  )
 
   const leftWall = Bodies.rectangle(
     worldWidth / 3 - pinsConfig.pinSize * pinsConfig.pinGap - pinsConfig.pinGap,
@@ -166,8 +178,7 @@ export function Plinko() {
       render: {
         visible: false
       },
-      isStatic: true,
-      isSensor: true
+      isStatic: true
     }
   )
 
@@ -179,7 +190,7 @@ export function Plinko() {
     worldWidth / 2 - (pinsConfig.pinGap / 2) * lines - pinsConfig.pinGap
 
   multipliers.forEach(multiplier => {
-    const blockSize = 21 // height and width
+    const blockSize = 20 // height and width
     const multiplierBody = Bodies.rectangle(
       lastMultiplierX + 20,
       worldWidth / lines + lines * pinsConfig.pinGap + pinsConfig.pinGap,
@@ -208,44 +219,52 @@ export function Plinko() {
     rightWall
   ])
 
-  function bet() {
-    addBall()
+  function bet(betValue: number) {
+    addBall(betValue)
   }
 
   function setBalance(number: number) {
     dispatch(incrementCurrentBalance(number))
   }
 
-  Events.on(engine, 'collisionActive', event => {
+  function onCollideWithMultiplier(ball: Body, multiplier: Body) {
+    ball.collisionFilter.group = 2
+    World.remove(engine.world, ball)
+    removeInGameBall()
+    const ballValue = ball.label.split('-')[1]
+    const multiplierValue = +multiplier.label.split('-')[1] as MultiplierValues
+
+    const multiplierSong = new Audio(getMultiplierSound(multiplierValue))
+    multiplierSong.currentTime = 0
+    multiplierSong.volume = 0.2
+    multiplierSong.play()
+
+    if (+ballValue <= 0) return
+
+    const newBalance = +ballValue * multiplierValue
+    setBalance(newBalance)
+  }
+
+  function onBodyCollision(event: IEventCollision<Engine>) {
     const pairs = event.pairs
     for (const pair of pairs) {
       const { bodyA, bodyB } = pair
-      if (bodyB.label.includes('ball') && bodyA.label.includes('block')) {
-        pair.bodyB.collisionFilter.group = 2
-        World.remove(engine.world, pair.bodyB)
-        const ballValue = bodyB.label.split('-')[1]
-        const multiplierValue = +bodyA.label.split('-')[1] as MultiplierValues
-        const multiplierSong = new Audio(getMultiplierSound(multiplierValue))
-        multiplierSong.currentTime = 0
-        multiplierSong.play()
-        const newBalance = +ballValue * multiplierValue
-        setBalance(newBalance)
-      }
+      if (bodyB.label.includes('ball') && bodyA.label.includes('block'))
+        onCollideWithMultiplier(bodyB, bodyA)
     }
-  })
+  }
+
+  Events.on(engine, 'collisionActive', onBodyCollision)
 
   return (
-    <div className="h-full min-h-screen w-screen max-w-full bg-background">
-      <div className="flex flex-col-reverse items-center justify-center gap-4 lg:flex-row">
-        <div className="bg-primary text-text">
-          <button
-            onClick={bet}
-            className="w-full rounded-md bg-green px-4 py-2 transition-colors hover:bg-greenDark"
-          >
-            APOSTAR
-          </button>
-        </div>
-        <div className="flex-1">
+    <div className="h-full w-screen max-w-full bg-background">
+      <div className="flex flex-col-reverse items-center justify-center gap-4 md:flex-row md:items-stretch">
+        <BetActions
+          inGameBallsCount={inGameBallsCount}
+          onChangeLines={setLines}
+          onRunBet={bet}
+        />
+        <div className="flex flex-1 items-center justify-center">
           <PlinkoBody />
         </div>
       </div>
