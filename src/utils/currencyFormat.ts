@@ -3,7 +3,8 @@ export function currencyFormat(number: number) {
 }
 
 export function formatPoints(number: number): string {
-  const decPlaces = 2
+  const decPlaces = 10
+  if (number < 999) return number.toFixed(2)
   let newNumber: any = number
   const abbrev = [
     ' k',
@@ -32,7 +33,7 @@ export function formatPoints(number: number): string {
     if (size <= newNumber) {
       // Here, we multiply by decPlaces, round, and then divide by decPlaces.
       // This gives us nice rounding to a particular decimal place.
-      newNumber = Math.round((newNumber * decPlaces) / size) / decPlaces
+      newNumber = Math.floor((newNumber * decPlaces) / size) / decPlaces
 
       // Handle special case where we round up to the next abbreviation
       if (newNumber === 1000 && i < abbrev.length - 1) {
