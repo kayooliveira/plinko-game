@@ -46,6 +46,7 @@ export function BetActions({
 
     if (value >= currentBalance) {
       setBetValue(currentBalance)
+      return
     }
 
     const newBetvalue = value <= 0 ? 0 : Math.floor(value)
@@ -67,8 +68,8 @@ export function BetActions({
   }
 
   return (
-    <div className="relative w-full flex-1 py-8 px-4">
-      <span className="absolute left-0 top-0 mx-auto w-full text-xs font-bold text-text">
+    <div className="relative h-full  flex-1 py-8 px-4">
+      <span className="absolute left-4 top-0 mx-auto w-full text-xs font-bold text-text md:text-base">
         *bolas em jogo {inGameBallsCount}/15
       </span>
       <div className="flex h-full flex-col gap-4 rounded-md bg-primary p-4 text-text md:justify-between">
@@ -116,7 +117,7 @@ export function BetActions({
 
             <button
               onClick={handleRunBet}
-              className="block self-end rounded-md bg-purpleDark px-2 py-4 text-sm font-bold leading-none text-background transition-colors hover:bg-purple focus:outline-none focus:ring-1 focus:ring-purple focus:ring-offset-1 focus:ring-offset-primary md:hidden"
+              className="block rounded-md bg-purple px-2 py-4 text-sm font-bold leading-none text-background transition-colors hover:bg-purpleDark focus:outline-none focus:ring-1 focus:ring-purple focus:ring-offset-1 focus:ring-offset-primary md:hidden"
             >
               Apostar
             </button>
@@ -137,7 +138,7 @@ export function BetActions({
         </div>
         <button
           onClick={handleRunBet}
-          className="hidden rounded-md bg-purpleDark px-6 py-5 font-bold leading-none text-background transition-colors hover:bg-purple focus:outline-none focus:ring-1 focus:ring-purple focus:ring-offset-1 focus:ring-offset-primary md:visible md:block"
+          className="hidden rounded-md bg-purple px-6 py-5 font-bold leading-none text-background transition-colors hover:bg-purpleDark focus:outline-none focus:ring-1 focus:ring-purple focus:ring-offset-1 focus:ring-offset-primary md:visible md:block"
         >
           Apostar
         </button>
