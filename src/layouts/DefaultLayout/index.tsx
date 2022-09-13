@@ -12,8 +12,8 @@ export function DefaultLayout() {
   return (
     <div className="flex h-screen max-h-screen w-full flex-col justify-between bg-background">
       <Navbar />
-      <div className="flex h-full flex-col justify-between pt-2">
-        <div className="h-full max-w-[1400px]">
+      <div className="flex h-full flex-col items-center justify-between pt-2">
+        <div className="h-full w-full max-w-[1400px]">
           {isLoading ? <Loading /> : <Outlet />}
         </div>
         <Footer />

@@ -68,8 +68,8 @@ export function BetActions({
   }
 
   return (
-    <div className="relative h-full  flex-1 py-8 px-4">
-      <span className="absolute left-4 top-0 mx-auto w-full text-xs font-bold text-text md:text-base">
+    <div className="relative h-full w-full flex-1 py-8 px-4">
+      <span className="absolute left-4 top-0 mx-auto text-xs font-bold text-text md:text-base">
         *bolas em jogo {inGameBallsCount}/15
       </span>
       <div className="flex h-full flex-col gap-4 rounded-md bg-primary p-4 text-text md:justify-between">
