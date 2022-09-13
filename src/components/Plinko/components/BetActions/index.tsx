@@ -2,6 +2,7 @@ import { LinesType } from 'components/Plinko/@types'
 import { CurrencyDollarSimple } from 'phosphor-react'
 import { ChangeEvent, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useAuth } from 'redux/slicers/sliceAuth'
 import { decrementCurrentBalance, useWallet } from 'redux/slicers/sliceWallet'
 
 interface PlinkoBetActions {
@@ -15,7 +16,8 @@ export function BetActions({
   onChangeLines,
   inGameBallsCount
 }: PlinkoBetActions) {
-  const { currentBalance } = useSelector(useWallet)
+  const { currentBalance, isLoading } = useSelector(useWallet)
+  const { isAuth } = useSelector(useAuth)
   const [betValue, setBetValue] = useState(0)
   const maxLinesQnt = 16
   const linesOptions: number[] = []
@@ -25,6 +27,7 @@ export function BetActions({
   }
 
   function handleChangeBetValue(e: ChangeEvent<HTMLInputElement>) {
+    if (!isAuth || isLoading) return
     e.preventDefault()
     const value = +e.target.value
     const newBetValue = value >= currentBalance ? currentBalance : value
@@ -32,16 +35,20 @@ export function BetActions({
   }
 
   function handleChangeLines(e: ChangeEvent<HTMLSelectElement>) {
+    if (!isAuth || isLoading) return
+
     onChangeLines(Number(e.target.value) as LinesType)
   }
 
   function handleHalfBet() {
+    if (!isAuth || isLoading) return
     const value = betValue / 2
     const newBetvalue = value <= 0 ? 0 : Math.floor(value)
     setBetValue(newBetvalue)
   }
 
   function handleDoubleBet() {
+    if (!isAuth || isLoading) return
     const value = betValue * 2
 
     if (value >= currentBalance) {
@@ -54,10 +61,12 @@ export function BetActions({
   }
 
   function handleMaxBet() {
+    if (!isAuth || isLoading) return
     setBetValue(currentBalance)
   }
 
   function handleRunBet() {
+    if (!isAuth || isLoading) return
     if (inGameBallsCount >= 15) return
     if (betValue > currentBalance) {
       setBetValue(currentBalance)
