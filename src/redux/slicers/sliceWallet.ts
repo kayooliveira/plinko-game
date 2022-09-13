@@ -59,13 +59,12 @@ export const getCurrentBalanceFromDb: any = createAsyncThunk(
       }
       return data
     }
-    return INITIAL_STATE
   }
 )
 
 const sliceWallet = createSlice({
   name: 'wallet',
-  initialState: INITIAL_STATE,
+  initialState: EMPTY_STATE,
   reducers: {
     resetCurrentBalance() {
       updateCurrentBalanceOnDatabase(0)
@@ -118,10 +117,12 @@ const sliceWallet = createSlice({
       state,
       { payload }: PayloadAction<Wallet>
     ) => {
-      const payloadBalance = payload.currentBalance
-      state.isLoading = false
-      state.currentBalance = payloadBalance
-      state.currentBalanceFormatted = formatPoints(payloadBalance)
+      if (payload) {
+        const payloadBalance = payload.currentBalance
+        state.isLoading = false
+        state.currentBalance = payloadBalance
+        state.currentBalanceFormatted = formatPoints(payloadBalance)
+      }
     },
     [getCurrentBalanceFromDb.pending.type]: state => {
       state.isLoading = true
