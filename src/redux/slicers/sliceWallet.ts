@@ -13,7 +13,7 @@ interface Wallet {
 const INITIAL_STATE: Wallet = {
   currentBalance: 100,
   currentBalanceFormatted: formatPoints(100),
-  isLoading: true
+  isLoading: false
 }
 
 const EMPTY_STATE: Wallet = {
@@ -55,11 +55,11 @@ export const getCurrentBalanceFromDb: any = createAsyncThunk(
       const data = snapshot.val()
       if (!data) {
         setFirstBalanceOnDatabase(uid)
-        return EMPTY_STATE
+        return INITIAL_STATE
       }
       return data
     }
-    return EMPTY_STATE
+    return INITIAL_STATE
   }
 )
 
