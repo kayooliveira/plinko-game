@@ -48,6 +48,10 @@ export function ScoreBoardPage() {
         <div className="rounded-md bg-background p-1 text-center text-2xl">
           <strong>TOP 10</strong>
           <br /> Melhores Jogadores
+          <br />
+          <span className="text-xs">
+            clique em um jogador para ver o perfil
+          </span>
         </div>
         {userProfile ? (
           <div className="mx-auto flex w-full  flex-col items-center justify-center">
