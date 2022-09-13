@@ -25,7 +25,8 @@ export function ScoreBoardPage() {
   async function getScoreBoardData() {
     const snapshot = await get(dbRef)
     const data = Object.values(snapshot.val()) as unknown as ScoreBoard[]
-    setScoreBoard(data)
+    const sortedData = data.sort((a, b) => b.currentBalance - a.currentBalance)
+    setScoreBoard(sortedData)
   }
 
   useEffect(() => {
