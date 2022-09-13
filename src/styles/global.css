@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind base;
 
-html {
+body {
   font-family: 'Baloo 2', cursive;
+  min-height: 100%;
+  height:'100%';
+  overflow-x:hidden;
 }
