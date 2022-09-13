@@ -1,15 +1,23 @@
 import { CurrencyDollarSimple } from 'phosphor-react'
-import { useSelector } from 'react-redux'
-import { useWallet } from 'redux/slicers/sliceWallet'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useAuth } from 'redux/slicers/sliceAuth'
+import { getCurrentBalanceFromDb, useWallet } from 'redux/slicers/sliceWallet'
 
 interface WalletCardProps {
   showFormatted?: boolean
 }
 export function WalletCard({ showFormatted }: WalletCardProps) {
-  const wallet = useSelector(useWallet)
-  const currency = showFormatted
-    ? wallet.currentBalanceFormatted
-    : wallet.currentBalance
+  const { currentBalance, currentBalanceFormatted } = useSelector(useWallet)
+  const {
+    user: { id }
+  } = useSelector(useAuth)
+  const currency = showFormatted ? currentBalanceFormatted : currentBalance
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch<any>(getCurrentBalanceFromDb(id))
+  }, [id])
 
   return (
     <div className="flex cursor-pointer items-stretch">
@@ -17,7 +25,7 @@ export function WalletCard({ showFormatted }: WalletCardProps) {
         <span className="rounded-full bg-purpleDark p-1">
           <CurrencyDollarSimple weight="bold" />
         </span>
-        <span title={wallet.currentBalance.toString()}>{currency}</span>
+        <span title={currentBalance.toString()}>{currency}</span>
       </div>
       <span
         title="Plinko Points"
