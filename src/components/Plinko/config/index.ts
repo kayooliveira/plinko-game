@@ -6,11 +6,11 @@ const pins = {
 }
 
 const ball = {
-  ballSize: 5.5
+  ballSize: 6
 }
 
 const engine = {
-  engineGravity: 1
+  engineGravity: 1.1
 }
 
 const world = {
