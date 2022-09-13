@@ -69,57 +69,52 @@ const sliceWallet = createSlice({
   name: 'wallet',
   initialState: EMPTY_STATE,
   reducers: {
-    resetCurrentBalance(state) {
+    resetCurrentBalance() {
       updateCurrentBalanceOnDatabase(0)
-      state.currentBalance = 0
-      state.currentBalanceFormatted = formatPoints(0)
-      state.isLoading = false
+      return INITIAL_STATE
     },
-    zeroCurrentBalance(state) {
+    zeroCurrentBalance() {
       updateCurrentBalanceOnDatabase(0)
-      state.currentBalance = 0
-      state.currentBalanceFormatted = formatPoints(0)
-      state.isLoading = false
+      return EMPTY_STATE
     },
     setCurrentBalance(state, { payload }: PayloadAction<number>) {
-      state.currentBalance = payload
-      state.currentBalanceFormatted = formatPoints(payload)
-      state.isLoading = false
+      return {
+        ...state,
+        currentBalance: payload,
+        currentBalanceFormatted: formatPoints(payload),
+        isLoading: false
+      }
     },
     incrementCurrentBalance(state, { payload }: PayloadAction<number>) {
       if (payload <= 0) {
-        state.currentBalance = 0
-        state.currentBalanceFormatted = formatPoints(0)
-        state.isLoading = false
-        return
+        updateCurrentBalanceOnDatabase(0)
+        return EMPTY_STATE
       }
       const newCurrentBalance = state.currentBalance + payload
 
       if (newCurrentBalance <= 0) {
         updateCurrentBalanceOnDatabase(0)
-        state.currentBalance = 0
-        state.currentBalanceFormatted = formatPoints(0)
-        state.isLoading = false
-        return
+        return EMPTY_STATE
       }
-      state.currentBalance = newCurrentBalance
-      state.currentBalanceFormatted = formatPoints(newCurrentBalance)
-      state.isLoading = false
       updateCurrentBalanceOnDatabase(newCurrentBalance)
+      return {
+        ...state,
+        currentBalance: newCurrentBalance,
+        currentBalanceFormatted: formatPoints(newCurrentBalance)
+      }
     },
     decrementCurrentBalance(state, { payload }: PayloadAction<number>) {
       const newCurrentBalance = state.currentBalance - payload
       if (newCurrentBalance <= 0) {
         updateCurrentBalanceOnDatabase(0)
-        state.currentBalance = 0
-        state.currentBalanceFormatted = formatPoints(0)
-        state.isLoading = false
-        return
+        return EMPTY_STATE
       }
-      state.currentBalance = newCurrentBalance
-      state.currentBalanceFormatted = formatPoints(newCurrentBalance)
-      state.isLoading = false
       updateCurrentBalanceOnDatabase(newCurrentBalance)
+      return {
+        ...state,
+        currentBalance: newCurrentBalance,
+        currentBalanceFormatted: formatPoints(newCurrentBalance)
+      }
     }
   },
   extraReducers: {
@@ -129,9 +124,9 @@ const sliceWallet = createSlice({
     ) => {
       if (payload) {
         const payloadBalance = payload.currentBalance
-        state.isLoading = false
         state.currentBalance = payloadBalance
         state.currentBalanceFormatted = formatPoints(payloadBalance)
+        state.isLoading = false
       }
     },
     [getCurrentBalanceFromDb.pending.type]: state => {
