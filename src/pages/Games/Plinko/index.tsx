@@ -13,9 +13,9 @@ export function GamePlinkoPage() {
   const dispatch = useDispatch()
   useEffect(() => {
     if (isAuth) {
-      dispatch(getCurrentBalanceFromDb())
+      dispatch(getCurrentBalanceFromDb(user.id))
     }
-  }, [isAuth])
+  }, [isAuth, user.id])
   const walletRef = ref(database, 'wallet/' + user.id)
   onValue(walletRef, snapshot => {
     if (snapshot.exists()) {

@@ -19,7 +19,7 @@ const INITIAL_STATE: Wallet = {
 const EMPTY_STATE: Wallet = {
   currentBalance: 0,
   currentBalanceFormatted: formatPoints(0),
-  isLoading: true
+  isLoading: false
 }
 
 async function updateCurrentBalanceOnDatabase(balance: number) {
@@ -50,15 +50,18 @@ export async function setFirstBalanceOnDatabase(uid: string) {
 export const getCurrentBalanceFromDb: any = createAsyncThunk(
   'auth/getCurrentBalanceFromDb',
   async (uid: string) => {
+    console.log('getCurrentBalanceFromDbUID', uid)
     if (uid) {
       const snapshot = await get(child(ref(database), `wallet/${uid}`))
       const data = snapshot.val()
+      console.log('getCurrentBalanceFromDbData', data)
       if (!data) {
-        setFirstBalanceOnDatabase(uid)
+        await setFirstBalanceOnDatabase(uid)
         return INITIAL_STATE
       }
       return data
     }
+    return EMPTY_STATE
   }
 )
 
@@ -66,50 +69,57 @@ const sliceWallet = createSlice({
   name: 'wallet',
   initialState: EMPTY_STATE,
   reducers: {
-    resetCurrentBalance() {
+    resetCurrentBalance(state) {
       updateCurrentBalanceOnDatabase(0)
-      return { ...EMPTY_STATE, isLoading: false }
+      state.currentBalance = 0
+      state.currentBalanceFormatted = formatPoints(0)
+      state.isLoading = false
     },
-    zeroCurrentBalance() {
+    zeroCurrentBalance(state) {
       updateCurrentBalanceOnDatabase(0)
-      return { ...EMPTY_STATE, isLoading: false }
+      state.currentBalance = 0
+      state.currentBalanceFormatted = formatPoints(0)
+      state.isLoading = false
     },
     setCurrentBalance(state, { payload }: PayloadAction<number>) {
-      const newWallet: Wallet = {
-        currentBalance: payload,
-        currentBalanceFormatted: formatPoints(payload),
-        isLoading: false
-      }
-      return { ...state, ...newWallet }
+      state.currentBalance = payload
+      state.currentBalanceFormatted = formatPoints(payload)
+      state.isLoading = false
     },
     incrementCurrentBalance(state, { payload }: PayloadAction<number>) {
-      if (payload <= 0) return { ...EMPTY_STATE, isLoading: false }
-
+      if (payload <= 0) {
+        state.currentBalance = 0
+        state.currentBalanceFormatted = formatPoints(0)
+        state.isLoading = false
+        return
+      }
       const newCurrentBalance = state.currentBalance + payload
 
       if (newCurrentBalance <= 0) {
         updateCurrentBalanceOnDatabase(0)
-        return { ...EMPTY_STATE, isLoading: false }
+        state.currentBalance = 0
+        state.currentBalanceFormatted = formatPoints(0)
+        state.isLoading = false
+        return
       }
-      const newWallet: Wallet = {
-        currentBalance: newCurrentBalance,
-        currentBalanceFormatted: formatPoints(newCurrentBalance)
-      }
+      state.currentBalance = newCurrentBalance
+      state.currentBalanceFormatted = formatPoints(newCurrentBalance)
+      state.isLoading = false
       updateCurrentBalanceOnDatabase(newCurrentBalance)
-      return { ...state, ...newWallet, isLoading: false }
     },
     decrementCurrentBalance(state, { payload }: PayloadAction<number>) {
       const newCurrentBalance = state.currentBalance - payload
       if (newCurrentBalance <= 0) {
         updateCurrentBalanceOnDatabase(0)
-        return { ...EMPTY_STATE, isLoading: false }
+        state.currentBalance = 0
+        state.currentBalanceFormatted = formatPoints(0)
+        state.isLoading = false
+        return
       }
-      const newWallet: Wallet = {
-        currentBalance: newCurrentBalance,
-        currentBalanceFormatted: formatPoints(newCurrentBalance)
-      }
+      state.currentBalance = newCurrentBalance
+      state.currentBalanceFormatted = formatPoints(newCurrentBalance)
+      state.isLoading = false
       updateCurrentBalanceOnDatabase(newCurrentBalance)
-      return { ...state, ...newWallet, isLoading: false }
     }
   },
   extraReducers: {
