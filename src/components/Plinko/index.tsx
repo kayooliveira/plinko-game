@@ -257,8 +257,8 @@ export function Plinko() {
   Events.on(engine, 'collisionActive', onBodyCollision)
 
   return (
-    <div className="h-full w-screen max-w-full bg-background">
-      <div className="flex flex-col-reverse items-center justify-center gap-4 md:flex-row md:items-stretch">
+    <div className="w-full bg-background">
+      <div className="flex h-full flex-col-reverse items-center justify-center gap-4 md:flex-row md:items-stretch">
         <BetActions
           inGameBallsCount={inGameBallsCount}
           onChangeLines={setLines}
