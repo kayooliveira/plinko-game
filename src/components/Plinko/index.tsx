@@ -24,6 +24,7 @@ import { random } from 'utils/random'
 import { LinesType, MultiplierValues } from './@types'
 import { BetActions } from './components/BetActions'
 import { PlinkoBody } from './components/Body'
+import { MultiplierHistory } from './components/MultiplierHistory'
 import { config } from './config'
 import {
   getMultiplierByLinesQnt,
@@ -49,6 +50,7 @@ export function Plinko() {
   const engine = Engine.create()
   const [lines, setLines] = useState<LinesType>(16)
   const [inGameBallsCount, setInGameBallsCount] = useState(0)
+  const [lastMultipliers, setLastMultipliers] = useState<number[]>([])
   const {
     pins: pinsConfig,
     colors,
@@ -249,13 +251,13 @@ export function Plinko() {
     multiplierSong.currentTime = 0
     multiplierSong.volume = 0.2
     multiplierSong.play()
+    setLastMultipliers(prev => [multiplierValue, prev[0], prev[1], prev[2]])
 
     if (+ballValue <= 0) return
 
     const newBalance = +ballValue * multiplierValue
     dispatch(incrementCurrentBalance(newBalance))
   }
-
   function onBodyCollision(event: IEventCollision<Engine>) {
     const pairs = event.pairs
     for (const pair of pairs) {
@@ -275,6 +277,7 @@ export function Plinko() {
           onChangeLines={setLines}
           onRunBet={bet}
         />
+        <MultiplierHistory multiplierHistory={lastMultipliers} />
         <div className="flex flex-1 items-center justify-center">
           <PlinkoBody />
         </div>
