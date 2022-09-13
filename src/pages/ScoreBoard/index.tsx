@@ -74,7 +74,7 @@ export function ScoreBoardPage() {
                   })
                 }
                 className="flex items-center justify-between gap-4 rounded-md bg-secondary p-1 px-2"
-                key={score.user.uid}
+                key={score.user.uid + score.user.name}
               >
                 <div className="flex flex-1 items-center justify-between">
                   <span className="max-w-[15ch] overflow-hidden truncate">
