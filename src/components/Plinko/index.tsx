@@ -1,4 +1,6 @@
 import ballAudio from '@sounds/ball.wav'
+import { onValue, ref } from 'firebase/database'
+import { database } from 'lib/firebase'
 import {
   Bodies,
   Body,
@@ -11,8 +13,12 @@ import {
   World
 } from 'matter-js'
 import { useCallback, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { incrementCurrentBalance } from 'redux/slicers/sliceWallet'
+import { useSelector, useDispatch } from 'react-redux'
+import { useAuth } from 'redux/slicers/sliceAuth'
+import {
+  incrementCurrentBalance,
+  setCurrentBalance
+} from 'redux/slicers/sliceWallet'
 import { random } from 'utils/random'
 
 import { LinesType, MultiplierValues } from './@types'
@@ -27,6 +33,18 @@ import {
 export function Plinko() {
   // #region States
   const dispatch = useDispatch()
+  const { isAuth, user } = useSelector(useAuth)
+
+  const walletRef = ref(database, 'wallet/' + user.id)
+  onValue(walletRef, snapshot => {
+    if (snapshot.exists()) {
+      const data = snapshot.val()
+      if (data.currentBalance && isAuth) {
+        dispatch(setCurrentBalance(data.currentBalance))
+      }
+    }
+    return null
+  })
 
   const engine = Engine.create()
   const [lines, setLines] = useState<LinesType>(16)
@@ -142,9 +160,6 @@ export function Plinko() {
         render: {
           fillStyle: ballColor
         },
-        collisionFilter: {
-          group: -1
-        },
         isStatic: false
       })
       Composite.add(engine.world, ball)
@@ -223,10 +238,6 @@ export function Plinko() {
     addBall(betValue)
   }
 
-  function setBalance(number: number) {
-    dispatch(incrementCurrentBalance(number))
-  }
-
   function onCollideWithMultiplier(ball: Body, multiplier: Body) {
     ball.collisionFilter.group = 2
     World.remove(engine.world, ball)
@@ -242,7 +253,7 @@ export function Plinko() {
     if (+ballValue <= 0) return
 
     const newBalance = +ballValue * multiplierValue
-    setBalance(newBalance)
+    dispatch(incrementCurrentBalance(newBalance))
   }
 
   function onBodyCollision(event: IEventCollision<Engine>) {
