@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { get, ref } from 'firebase/database'
 import { database } from 'lib/firebase'
 import { Profile } from 'pages/Profile'
@@ -64,7 +65,7 @@ export function ScoreBoardPage() {
             </button>
           </div>
         ) : (
-          <div className="mx-auto flex w-4/5 flex-col gap-2">
+          <div className="flex w-full flex-col gap-2 lg:mx-auto lg:w-4/5">
             {scoreBoard.map(score => (
               <button
                 onClick={() =>
@@ -73,18 +74,36 @@ export function ScoreBoardPage() {
                     currentBalance: score.currentBalance
                   })
                 }
-                className="flex items-center justify-between gap-4 rounded-md bg-secondary p-1 px-2"
+                className={classNames(
+                  'flex items-center justify-between gap-4 rounded-md p-1 px-2',
+                  {
+                    'bg-secondary/60': score.user.uid === user.id,
+                    'bg-secondary/20': score.user.uid !== user.id
+                  }
+                )}
                 key={score.user.uid + score.user.name}
               >
-                <div className="flex flex-1 items-center justify-between">
+                <div
+                  className={classNames(
+                    'flex flex-1 items-center justify-between gap-4',
+                    {
+                      'text-purple': score.user.uid === user.id,
+                      'text-text': score.user.uid !== user.id
+                    }
+                  )}
+                >
                   <span className="max-w-[15ch] overflow-hidden truncate">
-                    {score.user.uid === user.id ? 'Você' : score.user.name}
+                    {score.user.uid === user.id ? (
+                      <strong>Você</strong>
+                    ) : (
+                      score.user.name
+                    )}
                   </span>
                   <strong
-                    className="text-lg"
+                    className="text-sm lg:text-lg"
                     title={String(score.currentBalance)}
                   >
-                    {formatPoints(score.currentBalance)} PPs
+                    {formatPoints(score.currentBalance)}
                   </strong>
                 </div>
                 {score.user.profilePic ? (
@@ -104,7 +123,7 @@ export function ScoreBoardPage() {
       </div>
       <Link
         to="/plinko"
-        className="flex items-center justify-center gap-4 rounded-lg bg-purpleDark p-4 text-lg font-bold text-text shadow-md transition-colors hover:bg-purple"
+        className="mb-4 flex items-center justify-center gap-4 rounded-lg bg-purpleDark p-4 text-lg font-bold text-text shadow-md transition-colors hover:bg-purple"
       >
         <Play weight="fill" size="20" />
         JOGAR
