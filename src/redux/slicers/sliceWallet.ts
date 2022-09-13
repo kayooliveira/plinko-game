@@ -65,7 +65,7 @@ export const getCurrentBalanceFromDb: any = createAsyncThunk(
 
 const sliceWallet = createSlice({
   name: 'wallet',
-  initialState: EMPTY_STATE,
+  initialState: INITIAL_STATE,
   reducers: {
     resetCurrentBalance() {
       updateCurrentBalanceOnDatabase(0)
