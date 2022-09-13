@@ -4,15 +4,18 @@ import { SignOut } from 'phosphor-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { logout, useAuth } from 'redux/slicers/sliceAuth'
+import { useWallet } from 'redux/slicers/sliceWallet'
 
 import { WalletCard } from '../WalletCard'
 
 export function Navbar() {
+  const { currentBalance } = useSelector(useWallet)
   const { isAuth } = useSelector(useAuth)
   const dispatch = useDispatch()
   function handleSignOut() {
     dispatch(logout())
   }
+
   return (
     <nav className="sticky top-0 z-50 bg-primary px-4 shadow-lg">
       <div
@@ -29,7 +32,7 @@ export function Navbar() {
         </Link>
         {isAuth && (
           <div className="flex items-stretch gap-4">
-            <WalletCard showFormatted />
+            <WalletCard balance={currentBalance} showFormatted />
             <button
               title="Sair"
               onClick={handleSignOut}
