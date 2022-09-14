@@ -1,7 +1,8 @@
 import { LinesType } from 'components/Plinko/@types'
-import { CurrencyDollarSimple } from 'phosphor-react'
+import { Coin, CurrencyDollarSimple } from 'phosphor-react'
 import { ChangeEvent, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { useAuth } from 'redux/slicers/sliceAuth'
 import { decrementCurrentBalance, useWallet } from 'redux/slicers/sliceWallet'
 
@@ -81,6 +82,12 @@ export function BetActions({
       <span className="absolute left-4 top-0 mx-auto text-xs font-bold text-text md:text-base">
         *bolas em jogo {inGameBallsCount}/15
       </span>
+      <Link
+        to="/contribute"
+        className="absolute left-4 -bottom-16 mx-auto flex items-center gap-2 rounded-md bg-primary p-2 px-4 text-xs font-bold text-text md:text-base"
+      >
+        APOIE O PROJETO SE SE DIVERTIU <Coin />
+      </Link>
       <div className="flex h-full flex-col gap-4 rounded-md bg-primary p-4 text-text md:justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex flex-row items-stretch gap-1 md:flex-col">
