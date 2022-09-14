@@ -86,7 +86,7 @@ export function BetActions({
         to="/contribute"
         className="absolute left-4 -bottom-16 mx-auto flex items-center gap-2 rounded-md bg-primary p-2 px-4 text-xs font-bold text-text md:text-base"
       >
-        APOIE O PROJETO SE SE DIVERTIU <Coin />
+        APOIE O PROJETO COM 1 REAL SE SE DIVERTIU <Coin />
       </Link>
       <div className="flex h-full flex-col gap-4 rounded-md bg-primary p-4 text-text md:justify-between">
         <div className="flex flex-col gap-2">

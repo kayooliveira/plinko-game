@@ -5,7 +5,7 @@ export function Contribute() {
     <div className="flex h-full flex-col items-center justify-center gap-4">
       <div className="mx-auto flex w-1/2 flex-col items-center justify-center">
         <h2 className="text-center text-2xl text-text">
-          Contribua com o projeto :)
+          Contribua com 1 real :)
         </h2>
         <img src={pixImg} alt="" />
       </div>
