@@ -64,18 +64,6 @@ async function updateCurrentBalanceOnDatabase(balance: number) {
   })
 }
 
-export async function setFirstBalanceOnDatabase(uid: string) {
-  const walletRef = ref(database, 'wallet/' + uid)
-  await set(walletRef, {
-    currentBalance: walletInitialState.balance,
-    user: {
-      uid,
-      name: localStorage.getItem('name'),
-      profilePic: localStorage.getItem('profilePic')
-    }
-  })
-}
-
 export const useAuthStore = create<State>((set, getState) => ({
   user: userInitialState,
   wallet: walletInitialState,

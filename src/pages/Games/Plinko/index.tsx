@@ -1,4 +1,4 @@
-import { onValue, ref } from 'firebase/database'
+import { onValue, ref, set } from 'firebase/database'
 import { database } from 'lib/firebase'
 import { useAuthStore } from 'store/auth'
 
@@ -9,14 +9,31 @@ export function PlinkoGamePage() {
   const isAuth = useAuthStore(state => state.isAuth)
   const user = useAuthStore(state => state.user)
   const walletRef = ref(database, 'wallet/' + user.id)
-  onValue(walletRef, snapshot => {
+
+  async function setFirstBalanceOnDatabase() {
+    if (isAuth) {
+      await set(walletRef, {
+        currentBalance: 100,
+        user: {
+          uid: user.id,
+          name: localStorage.getItem('name'),
+          profilePic: localStorage.getItem('profilePic')
+        }
+      })
+    }
+  }
+
+  onValue(walletRef, async snapshot => {
     if (snapshot.exists()) {
       const data = snapshot.val()
       if (data.currentBalance && isAuth) {
+        console.log('passei nessa porra aqui')
         setCurrentBalance(data.currentBalance)
+        return
       }
+      return
     }
-    return null
+    await setFirstBalanceOnDatabase()
   })
   return <Game />
 }
