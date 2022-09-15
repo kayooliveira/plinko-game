@@ -1,5 +1,4 @@
 import pixImg from '@images/pix.png'
-import { Smiley } from 'phosphor-react'
 
 export function Contribute() {
   return (
