@@ -1,5 +1,6 @@
-import { CurrencyDollarSimple } from 'phosphor-react'
+import { Coin, CurrencyDollarSimple, Smiley } from 'phosphor-react'
 import { ChangeEvent, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuthStore } from 'store/auth'
 
 import { LinesType } from '../../@types'
@@ -82,6 +83,7 @@ export function BetActions({
       <span className="absolute left-4 top-0 mx-auto text-xs font-bold text-text md:text-base">
         *bolas em jogo {inGameBallsCount}/15
       </span>
+
       <div className="flex h-full flex-col gap-4 rounded-md bg-primary p-4 text-text md:justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex flex-row items-stretch gap-1 md:flex-col">
@@ -154,6 +156,21 @@ export function BetActions({
         >
           Apostar
         </button>
+        <div className="flex flex-col items-center gap-4 text-sm font-bold text-text md:items-start lg:absolute lg:-bottom-20 lg:left-4">
+          <span>
+            Se se divertiu jogando e quiser ajudar de alguma forma,
+            <span className="flex items-center gap-2">
+              doe 1 real pra o desenvolvedor clicando abaixo.
+              <Smiley weight="fill" />
+            </span>
+          </span>
+          <Link
+            to="/contribute"
+            className="flex items-center gap-2 rounded-md bg-background p-2 font-bold transition-colors hover:bg-primary/50 lg:bg-primary"
+          >
+            DOAR 1 REAL <Coin />
+          </Link>
+        </div>
       </div>
     </div>
   )
