@@ -27,7 +27,6 @@ export function PlinkoGamePage() {
     if (snapshot.exists()) {
       const data = snapshot.val()
       if (data.currentBalance && isAuth) {
-        console.log('passei nessa porra aqui')
         setCurrentBalance(data.currentBalance)
         return
       }

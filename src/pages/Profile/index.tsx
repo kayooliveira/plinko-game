@@ -13,7 +13,6 @@ interface User {
 
 export function Profile(user: User) {
   const authUser = useAuthStore(state => state.user)
-  console.log(user.position)
   return (
     <div className="flex flex-col items-center justify-center gap-2 rounded-md bg-primary p-2 px-6 text-text">
       <div className="relative mx-auto w-32 rounded-full">
