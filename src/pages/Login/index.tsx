@@ -26,7 +26,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-6">
+    <div className="flex h-full flex-col items-center justify-center gap-4 p-2">
       <span className="text-center text-2xl font-bold text-text">
         Faça login para mostrar seu score para outros jogadores.
       </span>

@@ -251,20 +251,16 @@ export function Game() {
   Events.on(engine, 'collisionActive', onBodyCollision)
 
   return (
-    <>
-      <div className="h-2/ w-full bg-background">
-        <div className="flex h-full flex-col-reverse items-center justify-center gap-4 md:flex-row md:items-stretch">
-          <BetActions
-            inGameBallsCount={inGameBallsCount}
-            onChangeLines={setLines}
-            onRunBet={bet}
-          />
-          <MultiplierHistory multiplierHistory={lastMultipliers} />
-          <div className="flex flex-1 items-center justify-center">
-            <PlinkoGameBody />
-          </div>
-        </div>
+    <div className="flex h-fit flex-col-reverse items-center justify-center gap-4 md:flex-row">
+      <BetActions
+        inGameBallsCount={inGameBallsCount}
+        onChangeLines={setLines}
+        onRunBet={bet}
+      />
+      <MultiplierHistory multiplierHistory={lastMultipliers} />
+      <div className="flex flex-1 items-center justify-center">
+        <PlinkoGameBody />
       </div>
-    </>
+    </div>
   )
 }

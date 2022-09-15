@@ -45,7 +45,7 @@ export function ScoreBoardPage() {
   }, [])
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
+    <div className="flex h-full flex-col items-center justify-center gap-4">
       <div className="flex w-4/5 flex-col gap-3 rounded bg-primary p-4 text-text">
         <div className="rounded-md bg-background p-1 text-center text-2xl">
           <strong>TOP 10</strong>

@@ -44,21 +44,21 @@ export function ScoreBoardPlayerItem({
       )}
       <div
         className={classNames(
-          'flex flex-1 items-center justify-between gap-4',
+          'flex max-w-full flex-1 items-center justify-between gap-4',
           {
             'text-purple': player.uid === user.id,
             'text-text': player.uid !== user.id
           }
         )}
       >
-        <span className="w-[15ch] max-w-[15ch] overflow-hidden truncate text-left transition-colors group-hover:text-transparent">
+        <span className=" max-w-[15ch] overflow-hidden truncate text-left group-hover:text-transparent lg:w-[15ch] lg:max-w-[15ch]">
           {player.uid === user.id ? <strong>Você</strong> : player.name}
         </span>
-        <span className="animate-pulse text-transparent transition-colors group-hover:text-text">
+        <span className="absolute left-1/3 hidden animate-pulse text-text group-hover:block">
           Clique para ir ao perfil
         </span>
         <strong
-          className="w-[10ch] max-w-[10ch] text-right text-sm transition-colors  group-hover:text-transparent lg:text-lg"
+          className="text-right text-sm transition-colors group-hover:text-transparent lg:w-[10ch]  lg:max-w-[10ch] lg:text-lg"
           title={String(player.currentBalance)}
         >
           {formatPoints(player.currentBalance)}
