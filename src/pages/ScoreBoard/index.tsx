@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import { get, ref } from 'firebase/database'
 import { database } from 'lib/firebase'
 import { Profile } from 'pages/Profile'
-import { ArrowLeft, FinnTheHuman, Play } from 'phosphor-react'
+import { ArrowLeft, CircleDashed, FinnTheHuman, Play } from 'phosphor-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from 'store/auth'
@@ -25,21 +25,29 @@ interface User {
 }
 
 export function ScoreBoardPage() {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const dbRef = ref(database, 'wallet')
   const user = useAuthStore(state => state.user)
   const [scoreBoard, setScoreBoard] = useState<ScoreBoard[]>([])
   const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
-  async function getScoreBoardData() {
-    const snapshot = await get(dbRef)
-    const data = Object.values(snapshot.val()) as unknown as ScoreBoard[]
-    const sortedData = data
-      .sort((a, b) => b.currentBalance - a.currentBalance)
-      .slice(0, 10)
-    setScoreBoard(sortedData)
-  }
 
   useEffect(() => {
+    const getScoreBoardData = async () => {
+      setIsLoading(true)
+      const snapshot = await get(dbRef)
+      const data = Object.values(snapshot.val()) as unknown as ScoreBoard[]
+      const sortedData = data
+        .sort((a, b) => b.currentBalance - a.currentBalance)
+        .slice(0, 10)
+      setScoreBoard(sortedData)
+      setIsLoading(false)
+    }
+
     getScoreBoardData()
+
+    return () => {
+      setScoreBoard([])
+    }
   }, [])
 
   return (
@@ -65,58 +73,73 @@ export function ScoreBoardPage() {
           </div>
         ) : (
           <div className="flex w-full flex-col gap-2 lg:mx-auto lg:w-4/5">
-            {scoreBoard.map(score => (
-              <button
-                onClick={() =>
-                  setUserProfile({
-                    ...score.user,
-                    currentBalance: score.currentBalance
-                  })
-                }
-                className={classNames(
-                  'flex items-center justify-between gap-4 rounded-md p-1 px-2',
-                  {
-                    'bg-secondary/60': score.user.uid === user.id,
-                    'bg-secondary/20': score.user.uid !== user.id
-                  }
-                )}
-                key={score.user.uid + score.user.name}
-              >
-                <div
-                  className={classNames(
-                    'flex flex-1 items-center justify-between gap-4',
-                    {
-                      'text-purple': score.user.uid === user.id,
-                      'text-text': score.user.uid !== user.id
+            {isLoading ? (
+              <div className="flex w-full flex-col items-center justify-center py-4">
+                <CircleDashed
+                  className="animate-spin"
+                  size="40"
+                  weight="bold"
+                />
+                <span className="mt-1 text-sm font-bold">
+                  Carregando scores...
+                </span>
+              </div>
+            ) : (
+              <>
+                {scoreBoard.map(score => (
+                  <button
+                    onClick={() =>
+                      setUserProfile({
+                        ...score.user,
+                        currentBalance: score.currentBalance
+                      })
                     }
-                  )}
-                >
-                  <span className="max-w-[15ch] overflow-hidden truncate">
-                    {score.user.uid === user.id ? (
-                      <strong>Você</strong>
-                    ) : (
-                      score.user.name
+                    className={classNames(
+                      'flex items-center justify-between gap-4 rounded-md p-1 px-2',
+                      {
+                        'bg-secondary/60': score.user.uid === user.id,
+                        'bg-secondary/20': score.user.uid !== user.id
+                      }
                     )}
-                  </span>
-                  <strong
-                    className="text-sm lg:text-lg"
-                    title={String(score.currentBalance)}
+                    key={score.user.uid + score.user.name}
                   >
-                    {formatPoints(score.currentBalance)}
-                  </strong>
-                </div>
-                {score.user.profilePic ? (
-                  <img
-                    src={score.user.profilePic}
-                    referrerPolicy="no-referrer"
-                    alt={score.user.name + ' Avatar'}
-                    className="w-8 rounded-full"
-                  />
-                ) : (
-                  <FinnTheHuman size="30" weight="fill" />
-                )}
-              </button>
-            ))}
+                    <div
+                      className={classNames(
+                        'flex flex-1 items-center justify-between gap-4',
+                        {
+                          'text-purple': score.user.uid === user.id,
+                          'text-text': score.user.uid !== user.id
+                        }
+                      )}
+                    >
+                      <span className="max-w-[15ch] overflow-hidden truncate">
+                        {score.user.uid === user.id ? (
+                          <strong>Você</strong>
+                        ) : (
+                          score.user.name
+                        )}
+                      </span>
+                      <strong
+                        className="text-sm lg:text-lg"
+                        title={String(score.currentBalance)}
+                      >
+                        {formatPoints(score.currentBalance)}
+                      </strong>
+                    </div>
+                    {score.user.profilePic ? (
+                      <img
+                        src={score.user.profilePic}
+                        referrerPolicy="no-referrer"
+                        alt={score.user.name + ' Avatar'}
+                        className="w-8 rounded-full"
+                      />
+                    ) : (
+                      <FinnTheHuman size="30" weight="fill" />
+                    )}
+                  </button>
+                ))}
+              </>
+            )}
           </div>
         )}
       </div>
