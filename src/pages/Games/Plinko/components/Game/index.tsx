@@ -221,7 +221,7 @@ export function Game() {
     addBall(betValue)
   }
 
-  function onCollideWithMultiplier(ball: Body, multiplier: Body) {
+  async function onCollideWithMultiplier(ball: Body, multiplier: Body) {
     ball.collisionFilter.group = 2
     World.remove(engine.world, ball)
     removeInGameBall()
@@ -237,14 +237,14 @@ export function Game() {
     if (+ballValue <= 0) return
 
     const newBalance = +ballValue * multiplierValue
-    incrementCurrentBalance(newBalance)
+    await incrementCurrentBalance(newBalance)
   }
-  function onBodyCollision(event: IEventCollision<Engine>) {
+  async function onBodyCollision(event: IEventCollision<Engine>) {
     const pairs = event.pairs
     for (const pair of pairs) {
       const { bodyA, bodyB } = pair
       if (bodyB.label.includes('ball') && bodyA.label.includes('block'))
-        onCollideWithMultiplier(bodyB, bodyA)
+        await onCollideWithMultiplier(bodyB, bodyA)
     }
   }
 

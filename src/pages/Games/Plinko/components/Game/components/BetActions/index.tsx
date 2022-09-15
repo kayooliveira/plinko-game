@@ -66,7 +66,7 @@ export function BetActions({
     setBetValue(currentBalance)
   }
 
-  function handleRunBet() {
+  async function handleRunBet() {
     if (!isAuth || isLoading) return
     if (inGameBallsCount >= 15) return
     if (betValue > currentBalance) {
@@ -75,7 +75,7 @@ export function BetActions({
     }
     onRunBet(betValue)
     if (betValue <= 0) return
-    decrementCurrentBalance(betValue)
+    await decrementCurrentBalance(betValue)
   }
 
   return (
