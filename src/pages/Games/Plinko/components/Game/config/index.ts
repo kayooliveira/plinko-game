@@ -1,4 +1,4 @@
-import { colors } from './../../../styles/colors'
+import { colors } from 'styles/colors'
 const pins = {
   startPins: 3,
   pinSize: 2,

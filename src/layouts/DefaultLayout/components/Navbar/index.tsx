@@ -1,19 +1,18 @@
 import plinkoLogo from '@images/logo.svg'
 import classNames from 'classnames'
 import { SignOut } from 'phosphor-react'
-import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { logout, useAuth } from 'redux/slicers/sliceAuth'
-import { useWallet } from 'redux/slicers/sliceWallet'
+import { useAuthStore } from 'store/auth'
 
 import { WalletCard } from '../WalletCard'
 
 export function Navbar() {
-  const { currentBalance } = useSelector(useWallet)
-  const { isAuth } = useSelector(useAuth)
-  const dispatch = useDispatch()
-  function handleSignOut() {
-    dispatch(logout())
+  const currentBalance = useAuthStore(state => state.wallet.balance)
+  const isAuth = useAuthStore(state => state.isAuth)
+  const signOut = useAuthStore(state => state.signOut)
+
+  async function handleSignOut() {
+    await signOut()
   }
 
   return (

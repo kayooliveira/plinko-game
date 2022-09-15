@@ -1,6 +1,4 @@
 import ballAudio from '@sounds/ball.wav'
-import { onValue, ref } from 'firebase/database'
-import { database } from 'lib/firebase'
 import {
   Bodies,
   Body,
@@ -13,17 +11,12 @@ import {
   World
 } from 'matter-js'
 import { useCallback, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useAuth } from 'redux/slicers/sliceAuth'
-import {
-  incrementCurrentBalance,
-  setCurrentBalance
-} from 'redux/slicers/sliceWallet'
+import { useAuthStore } from 'store/auth'
 import { random } from 'utils/random'
 
 import { LinesType, MultiplierValues } from './@types'
 import { BetActions } from './components/BetActions'
-import { PlinkoBody } from './components/Body'
+import { PlinkoGameBody } from './components/GameBody'
 import { MultiplierHistory } from './components/MultiplierHistory'
 import { config } from './config'
 import {
@@ -31,21 +24,9 @@ import {
   getMultiplierSound
 } from './config/multipliers'
 
-export function Plinko() {
+export function Game() {
   // #region States
-  const dispatch = useDispatch()
-  const { isAuth, user } = useSelector(useAuth)
-
-  const walletRef = ref(database, 'wallet/' + user.id)
-  onValue(walletRef, snapshot => {
-    if (snapshot.exists()) {
-      const data = snapshot.val()
-      if (data.currentBalance && isAuth) {
-        dispatch(setCurrentBalance(data.currentBalance))
-      }
-    }
-    return null
-  })
+  const incrementCurrentBalance = useAuthStore(state => state.incrementBalance)
 
   const engine = Engine.create()
   const [lines, setLines] = useState<LinesType>(16)
@@ -256,7 +237,7 @@ export function Plinko() {
     if (+ballValue <= 0) return
 
     const newBalance = +ballValue * multiplierValue
-    dispatch(incrementCurrentBalance(newBalance))
+    incrementCurrentBalance(newBalance)
   }
   function onBodyCollision(event: IEventCollision<Engine>) {
     const pairs = event.pairs
@@ -270,18 +251,20 @@ export function Plinko() {
   Events.on(engine, 'collisionActive', onBodyCollision)
 
   return (
-    <div className="w-full bg-background">
-      <div className="flex h-full flex-col-reverse items-center justify-center gap-4 overflow-x-hidden md:flex-row md:items-stretch">
-        <BetActions
-          inGameBallsCount={inGameBallsCount}
-          onChangeLines={setLines}
-          onRunBet={bet}
-        />
-        <MultiplierHistory multiplierHistory={lastMultipliers} />
-        <div className="flex flex-1 items-center justify-center">
-          <PlinkoBody />
+    <>
+      <div className="w-full bg-background">
+        <div className="flex h-full flex-col-reverse items-center justify-center gap-4 overflow-x-hidden md:flex-row md:items-stretch">
+          <BetActions
+            inGameBallsCount={inGameBallsCount}
+            onChangeLines={setLines}
+            onRunBet={bet}
+          />
+          <MultiplierHistory multiplierHistory={lastMultipliers} />
+          <div className="flex flex-1 items-center justify-center">
+            <PlinkoGameBody />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

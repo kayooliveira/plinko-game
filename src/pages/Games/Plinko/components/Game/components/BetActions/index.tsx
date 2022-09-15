@@ -1,10 +1,8 @@
-import { LinesType } from 'components/Plinko/@types'
-import { Coin, CurrencyDollarSimple } from 'phosphor-react'
+import { CurrencyDollarSimple } from 'phosphor-react'
 import { ChangeEvent, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { useAuth } from 'redux/slicers/sliceAuth'
-import { decrementCurrentBalance, useWallet } from 'redux/slicers/sliceWallet'
+import { useAuthStore } from 'store/auth'
+
+import { LinesType } from '../../@types'
 
 interface PlinkoBetActions {
   onRunBet: (betValue: number) => void
@@ -17,12 +15,13 @@ export function BetActions({
   onChangeLines,
   inGameBallsCount
 }: PlinkoBetActions) {
-  const { currentBalance, isLoading } = useSelector(useWallet)
-  const { isAuth } = useSelector(useAuth)
+  const isLoading = useAuthStore(state => state.isWalletLoading)
+  const currentBalance = useAuthStore(state => state.wallet.balance)
+  const decrementCurrentBalance = useAuthStore(state => state.decrementBalance)
+  const isAuth = useAuthStore(state => state.isAuth)
   const [betValue, setBetValue] = useState(0)
   const maxLinesQnt = 16
   const linesOptions: number[] = []
-  const dispatch = useDispatch()
   for (let i = 8; i <= maxLinesQnt; i++) {
     linesOptions.push(i)
   }
@@ -73,8 +72,9 @@ export function BetActions({
       setBetValue(currentBalance)
       return
     }
-    dispatch(decrementCurrentBalance(betValue))
     onRunBet(betValue)
+    if (betValue <= 0) return
+    decrementCurrentBalance(betValue)
   }
 
   return (
@@ -82,12 +82,6 @@ export function BetActions({
       <span className="absolute left-4 top-0 mx-auto text-xs font-bold text-text md:text-base">
         *bolas em jogo {inGameBallsCount}/15
       </span>
-      <Link
-        to="/contribute"
-        className="absolute left-4 -bottom-16 mx-auto flex items-center gap-2 rounded-md bg-primary p-2 px-4 text-xs font-bold text-text md:text-base"
-      >
-        APOIE O PROJETO COM 1 REAL SE SE DIVERTIU <Coin />
-      </Link>
       <div className="flex h-full flex-col gap-4 rounded-md bg-primary p-4 text-text md:justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex flex-row items-stretch gap-1 md:flex-col">
@@ -133,7 +127,8 @@ export function BetActions({
 
             <button
               onClick={handleRunBet}
-              className="block rounded-md bg-purple px-2 py-4 text-sm font-bold leading-none text-background transition-colors hover:bg-purpleDark focus:outline-none focus:ring-1 focus:ring-purple focus:ring-offset-1 focus:ring-offset-primary md:hidden"
+              disabled={isLoading}
+              className="block rounded-md bg-purple px-2 py-4 text-sm font-bold leading-none text-background transition-colors hover:bg-purpleDark focus:outline-none focus:ring-1 focus:ring-purple focus:ring-offset-1 focus:ring-offset-primary disabled:bg-gray-500 md:hidden"
             >
               Apostar
             </button>
@@ -154,7 +149,8 @@ export function BetActions({
         </div>
         <button
           onClick={handleRunBet}
-          className="hidden rounded-md bg-purple px-6 py-5 font-bold leading-none text-background transition-colors hover:bg-purpleDark focus:outline-none focus:ring-1 focus:ring-purple focus:ring-offset-1 focus:ring-offset-primary md:visible md:block"
+          disabled={isLoading}
+          className="hidden rounded-md bg-purple px-6 py-5 font-bold leading-none text-background transition-colors hover:bg-purpleDark focus:outline-none focus:ring-1 focus:ring-purple focus:ring-offset-1 focus:ring-offset-primary disabled:bg-gray-500 md:visible md:block"
         >
           Apostar
         </button>

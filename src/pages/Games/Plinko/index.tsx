@@ -1,18 +1,22 @@
-import { Plinko } from 'components/Plinko'
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useAuth } from 'redux/slicers/sliceAuth'
-import { getCurrentBalanceFromDb } from 'redux/slicers/sliceWallet'
-export function GamePlinkoPage() {
-  const { user, isAuth } = useSelector(useAuth)
+import { onValue, ref } from 'firebase/database'
+import { database } from 'lib/firebase'
+import { useAuthStore } from 'store/auth'
 
-  const dispatch = useDispatch()
+import { Game } from './components/Game'
 
-  useEffect(() => {
-    if (isAuth) {
-      dispatch(getCurrentBalanceFromDb(user.id))
+export function PlinkoGamePage() {
+  const setCurrentBalance = useAuthStore(state => state.setBalance)
+  const isAuth = useAuthStore(state => state.isAuth)
+  const user = useAuthStore(state => state.user)
+  const walletRef = ref(database, 'wallet/' + user.id)
+  onValue(walletRef, snapshot => {
+    if (snapshot.exists()) {
+      const data = snapshot.val()
+      if (data.currentBalance && isAuth) {
+        setCurrentBalance(data.currentBalance)
+      }
     }
-  }, [isAuth, user.id])
-
-  return <Plinko />
+    return null
+  })
+  return <Game />
 }
