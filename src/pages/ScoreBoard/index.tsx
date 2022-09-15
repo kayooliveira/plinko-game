@@ -4,9 +4,8 @@ import { database } from 'lib/firebase'
 import { Profile } from 'pages/Profile'
 import { ArrowLeft, FinnTheHuman, Play } from 'phosphor-react'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { useAuth } from 'redux/slicers/sliceAuth'
+import { useAuthStore } from 'store/auth'
 import { formatPoints } from 'utils/currencyFormat'
 
 interface ScoreBoard {
@@ -27,7 +26,7 @@ interface User {
 
 export function ScoreBoardPage() {
   const dbRef = ref(database, 'wallet')
-  const { user } = useSelector(useAuth)
+  const user = useAuthStore(state => state.user)
   const [scoreBoard, setScoreBoard] = useState<ScoreBoard[]>([])
   const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
   async function getScoreBoardData() {

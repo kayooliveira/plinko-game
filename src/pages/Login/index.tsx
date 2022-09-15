@@ -1,8 +1,7 @@
 import { GoogleLogo } from 'phosphor-react'
 import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { refreshAuth, signIn, useAuth } from 'redux/slicers/sliceAuth'
+import { useAuthStore } from 'store/auth'
 
 type LocationState = {
   from?: string
@@ -12,21 +11,18 @@ export function LoginPage() {
   const location = useLocation()
   const state = location.state as LocationState
   const navigate = useNavigate()
-  const { isAuth, user } = useSelector(useAuth)
-  const dispatch = useDispatch()
+  const signIn = useAuthStore(state => state.signIn)
+  const isAuth = useAuthStore(state => state.isAuth)
 
   useEffect(() => {
-    if (!isAuth && !user.id) {
-      dispatch<any>(refreshAuth())
-    } else if (state?.from && isAuth) {
-      navigate(state?.from || '/')
-    } else if (isAuth && user.id) {
-      navigate('/')
+    if (state && state.from && isAuth) {
+      navigate(state.from)
     }
-  }, [isAuth, user])
+  }, [isAuth])
 
-  function handleSignIn() {
-    dispatch<any>(signIn())
+  async function handleSignIn() {
+    await signIn()
+    navigate('/')
   }
 
   return (
