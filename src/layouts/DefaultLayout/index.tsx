@@ -18,8 +18,9 @@ export function DefaultLayout() {
   onValue(walletRef, async snapshot => {
     if (snapshot.exists()) {
       const data = snapshot.val()
-      if (data.currentBalance && isAuth) {
-        await setCurrentBalance(data.currentBalance)
+      if (data && isAuth) {
+        console.log(data)
+        setCurrentBalance(data.currentBalance)
         return
       }
       return
