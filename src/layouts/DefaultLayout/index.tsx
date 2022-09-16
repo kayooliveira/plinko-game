@@ -19,7 +19,6 @@ export function DefaultLayout() {
     if (snapshot.exists()) {
       const data = snapshot.val()
       if (data && isAuth) {
-        console.log(data)
         setCurrentBalance(data.currentBalance)
         return
       }

@@ -5,7 +5,6 @@ import { Game } from './components/Game'
 
 export function PlinkoGamePage() {
   const alertUser = (e: BeforeUnloadEvent) => {
-    console.log('gamesRunning', gamesRunning)
     if (gamesRunning > 0) {
       e.preventDefault()
       alert('Tu quer mermo sair feladaputa?')
