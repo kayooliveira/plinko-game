@@ -26,7 +26,7 @@ interface State {
   setUser: (user: User) => void
   isAuthLoading: boolean
   isWalletLoading: boolean
-  setBalance: (balance: number) => Promise<void>
+  setBalance: (balance: number) => void
   setBalanceOnDatabase: (balance: number) => Promise<void>
   incrementBalance: (amount: number) => Promise<void>
   decrementBalance: (amount: number) => Promise<void>
@@ -61,8 +61,9 @@ export const useAuthStore = create<State>((setState, getState) => ({
   isAuthLoading: false,
   isWalletLoading: false,
   isAuth: false,
-  setBalance: async (balance: number) => {
+  setBalance: (balance: number) => {
     try {
+      console.log('setando estado', balance)
       setState(
         produce<State>(state => {
           state.wallet.balance = balance
