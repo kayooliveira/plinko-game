@@ -100,10 +100,12 @@ export const useAuthStore = create<State>((setState, getState) => ({
         toast.error(
           'Você precisa ter o saldo menor abaixo de 10 para resgatar o presente'
         )
+        return
       }
       const newBalance = random(10, 300)
       await getState().setBalanceOnDatabase(newBalance)
       toast.success('Presente resgatado com sucesso')
+      return
     } catch (error) {
       toast.error('Ocorreu um erro ao resgatar o presente')
       console.error('redeemGiftError', error)
