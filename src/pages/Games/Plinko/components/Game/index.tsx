@@ -12,6 +12,7 @@ import {
 } from 'matter-js'
 import { useCallback, useEffect, useState } from 'react'
 import { useAuthStore } from 'store/auth'
+import { useGameStore } from 'store/game'
 import { random } from 'utils/random'
 
 import { LinesType, MultiplierValues } from './@types'
@@ -27,10 +28,15 @@ import {
 export function Game() {
   // #region States
   const incrementCurrentBalance = useAuthStore(state => state.incrementBalance)
-
   const engine = Engine.create()
   const [lines, setLines] = useState<LinesType>(16)
-  const [inGameBallsCount, setInGameBallsCount] = useState(0)
+  const inGameBallsCount = useGameStore(state => state.gamesRunning)
+  const incrementInGameBallsCount = useGameStore(
+    state => state.incrementGamesRunning
+  )
+  const decrementInGameBallsCount = useGameStore(
+    state => state.decrementGamesRunning
+  )
   const [lastMultipliers, setLastMultipliers] = useState<number[]>([])
   const {
     pins: pinsConfig,
@@ -109,11 +115,11 @@ export function Game() {
 
   function addInGameBall() {
     if (inGameBallsCount > 15) return
-    setInGameBallsCount(prevState => prevState + 1)
+    incrementInGameBallsCount()
   }
 
   function removeInGameBall() {
-    setInGameBallsCount(prevState => prevState - 1)
+    decrementInGameBallsCount()
   }
 
   const addBall = useCallback(
