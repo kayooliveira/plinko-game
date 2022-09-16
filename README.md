@@ -17,7 +17,7 @@
 - Typescript 
 - TailwindCSS (Styles)
 - Matter-JS (Physics engine)
-- ReduxJS (Manage the wallet state)
+- Zustand (Manage the states)
 
 ---
 
