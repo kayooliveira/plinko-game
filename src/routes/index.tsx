@@ -1,6 +1,7 @@
 import { DefaultLayout } from 'layouts/DefaultLayout'
 import { Contribute } from 'pages/Contribute'
 import { PlinkoGamePage } from 'pages/Games/Plinko'
+import { Gifts } from 'pages/Gifts'
 import { LoginPage } from 'pages/Login'
 import { ScoreBoardPage } from 'pages/ScoreBoard'
 import { BrowserRouter, Routes as Switch, Route } from 'react-router-dom'
@@ -14,6 +15,7 @@ export function Routes() {
         <Route element={<DefaultLayout />}>
           <Route element={<RequireAuth />}>
             <Route path="/plinko" element={<PlinkoGamePage />} />
+            <Route path="/gifts" element={<Gifts />} />
           </Route>
           <Route path="/" element={<ScoreBoardPage />} />
           <Route path="/login" element={<LoginPage />} />
