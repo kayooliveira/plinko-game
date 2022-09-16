@@ -1,4 +1,4 @@
-import { onValue, ref, set } from 'firebase/database'
+import { onValue, ref } from 'firebase/database'
 import { Navbar } from 'layouts/DefaultLayout/components/Navbar'
 import { database } from 'lib/firebase'
 import { Outlet } from 'react-router-dom'
@@ -10,22 +10,10 @@ import { Loading } from './components/Loading'
 export function DefaultLayout() {
   const isLoading = useAuthStore(state => state.isAuthLoading)
   const setCurrentBalance = useAuthStore(state => state.setBalance)
+  const setBalanceOnDatabase = useAuthStore(state => state.setBalanceOnDatabase)
   const isAuth = useAuthStore(state => state.isAuth)
   const user = useAuthStore(state => state.user)
   const walletRef = ref(database, 'wallet/' + user.id)
-
-  async function setFirstBalanceOnDatabase() {
-    if (isAuth) {
-      await set(walletRef, {
-        currentBalance: 100,
-        user: {
-          uid: user.id,
-          name: localStorage.getItem('name'),
-          profilePic: localStorage.getItem('profilePic')
-        }
-      })
-    }
-  }
 
   onValue(walletRef, async snapshot => {
     if (snapshot.exists()) {
@@ -36,8 +24,9 @@ export function DefaultLayout() {
       }
       return
     }
-    await setFirstBalanceOnDatabase()
+    await setBalanceOnDatabase(100)
   })
+
   return (
     <div className="flex min-h-screen w-full flex-col justify-between bg-background">
       <Navbar />
