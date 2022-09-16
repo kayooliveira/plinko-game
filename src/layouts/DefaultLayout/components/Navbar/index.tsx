@@ -1,12 +1,14 @@
 import plinkoLogo from '@images/logo.svg'
 import classNames from 'classnames'
-import { SignOut } from 'phosphor-react'
+import { Gift, SignOut } from 'phosphor-react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from 'store/auth'
+import { useGameStore } from 'store/game'
 
 import { WalletCard } from '../WalletCard'
 
 export function Navbar() {
+  const inGameBallsCount = useGameStore(state => state.gamesRunning)
   const currentBalance = useAuthStore(state => state.wallet.balance)
   const isAuth = useAuthStore(state => state.isAuth)
   const signOut = useAuthStore(state => state.signOut)
@@ -26,11 +28,22 @@ export function Navbar() {
           }
         )}
       >
-        <Link to="/">
+        <Link to={inGameBallsCount ? '#!' : '/'}>
           <img src={plinkoLogo} alt="" className="w-32 md:w-40" />
         </Link>
         {isAuth && (
           <div className="flex items-stretch gap-4">
+            {currentBalance < 10 && (
+              <Link
+                replace
+                to={inGameBallsCount ? '#!' : '/gifts'}
+                title="Presente"
+                className="animate-bounce text-text transition-colors hover:text-purple "
+              >
+                <Gift size="32" weight="fill" />
+              </Link>
+            )}
+
             <WalletCard balance={currentBalance} showFormatted />
             <button
               title="Sair"
