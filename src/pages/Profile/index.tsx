@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { Crown } from 'phosphor-react'
+import { Crown, FinnTheHuman } from 'phosphor-react'
 import { useAuthStore } from 'store/auth'
 import { formatPoints } from 'utils/currencyFormat'
 
@@ -16,11 +16,16 @@ export function Profile(user: User) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 rounded-md bg-primary p-2 px-6 text-text">
       <div className="relative mx-auto w-32 rounded-full">
-        <img
-          src={user.profilePic}
-          alt={user.name + ' Avatar'}
-          className="w-full rounded-full"
-        />
+        {user.profilePic ? (
+          <img
+            src={user.profilePic}
+            referrerPolicy="no-referrer"
+            alt={user.name + ' Avatar'}
+            className="w-full rounded-full"
+          />
+        ) : (
+          <FinnTheHuman size="full" weight="fill" />
+        )}
         {user.position <= 2 && (
           <Crown
             className={classNames(
@@ -41,7 +46,7 @@ export function Profile(user: User) {
           'text-purple': user.uid === authUser.id
         })}
       >
-        {user.name} {user.uid === authUser.id && '(você)'}
+        {user.name || 'Jogador Anônimo'} {user.uid === authUser.id && '(você)'}
       </span>
       <span className="text-center text-xl font-bold">
         {formatPoints(user.currentBalance)} PPs
