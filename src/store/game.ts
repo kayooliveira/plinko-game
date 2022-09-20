@@ -7,15 +7,21 @@ interface Game {
   decrementGamesRunning: () => void
 }
 
-export const useGameStore = create<Game>(set => ({
+export const useGameStore = create<Game>((set, get) => ({
   gamesRunning: 0,
   setGamesRunning: (gamesRunning: number) => {
     set({ gamesRunning })
   },
   incrementGamesRunning: () => {
-    set(state => ({ gamesRunning: state.gamesRunning + 1 }))
+    const gamesRunning = get().gamesRunning
+    const calc = gamesRunning + 1
+
+    set({ gamesRunning: calc < 0 ? 1 : calc })
   },
   decrementGamesRunning: () => {
-    set(state => ({ gamesRunning: state.gamesRunning - 1 }))
+    const gamesRunning = get().gamesRunning
+    const calc = gamesRunning - 1
+
+    set({ gamesRunning: calc < 0 ? 0 : calc })
   }
 }))
