@@ -146,6 +146,9 @@ export function Game() {
         label: `ball-${ballValue}`,
         id: new Date().getTime(),
         frictionAir: 0.05,
+        collisionFilter: {
+          group: -1
+        },
         render: {
           fillStyle: ballColor
         },
