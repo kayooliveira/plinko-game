@@ -188,6 +188,13 @@ export function Game() {
       isStatic: true
     }
   )
+  const floor = Bodies.rectangle(0, worldWidth + 10, worldWidth * 10, 40, {
+    label: 'block-1',
+    render: {
+      visible: false
+    },
+    isStatic: true
+  })
 
   const multipliers = getMultiplierByLinesQnt(lines)
 
@@ -223,7 +230,8 @@ export function Game() {
     ...pins,
     ...multipliersBodies,
     leftWall,
-    rightWall
+    rightWall,
+    floor
   ])
 
   function bet(betValue: number) {
