@@ -21,7 +21,23 @@ export function formatPoints(number: number): string {
     ' UnD',
     ' DuD',
     ' TriD',
-    ' QuadD'
+    ' QuadD',
+    ' QuinD',
+    ' SexD',
+    ' SepD',
+    ' OctD',
+    ' NonD',
+    ' VigD',
+    ' UnV',
+    ' DuV',
+    ' TriV',
+    ' QuadV',
+    ' QuinV',
+    ' SexV',
+    ' SepV',
+    ' OctV',
+    ' NonV',
+    ' TrigV'
   ]
 
   // Go through the array backwards, so we do the largest first
