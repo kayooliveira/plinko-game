@@ -29,7 +29,7 @@ export function DefaultLayout() {
 
   return (
     <div className="flex relative min-h-screen w-full flex-col justify-between bg-background">
-      <div className="absolute right-6 bottom-6">
+      <div className="absolute right-6 bottom-6 z-[9999]">
         <a
           href="https://www.buymeacoffee.com/kayooliveira"
           target="_blank"
