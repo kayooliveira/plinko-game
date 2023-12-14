@@ -51,22 +51,22 @@ export function ScoreBoardPlayerItem({
           }
         )}
       >
-        <span className=" max-w-[15ch] overflow-hidden truncate text-left group-hover:text-transparent lg:w-[15ch] lg:max-w-[15ch]">
+        <p className=" max-w-[15ch] overflow-hidden truncate text-left group-hover:text-transparent lg:w-[15ch] lg:max-w-[15ch]">
           {player.uid === user.id ? (
             <strong>Você</strong>
           ) : (
             player.name || 'Jogador Anônimo'
           )}
-        </span>
-        <span className="absolute left-1/3 hidden animate-pulse text-text group-hover:block">
+        </p>
+        <p className="absolute left-1/3 hidden animate-pulse text-text group-hover:block">
           Clique para ir ao perfil
-        </span>
-        <strong
-          className="text-right text-sm transition-colors group-hover:text-transparent lg:w-[10ch]  lg:max-w-[10ch] lg:text-lg"
+        </p>
+        <p
+          className="text-right font-bold text-sm transition-colors group-hover:text-transparent lg:w-[50ch]  lg:max-w-[50ch] lg:text-lg"
           title={String(player.currentBalance)}
         >
           {formatPoints(player.currentBalance)}
-        </strong>
+        </p>
       </div>
       {player.profilePic ? (
         <img

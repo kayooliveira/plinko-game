@@ -5,7 +5,7 @@ export function currencyFormat(number: number) {
 export function formatPoints(number: number): string {
   const decPlaces = 10
   if (number < 999) return number.toFixed(2)
-  let newNumber: any = number
+  let newNumber: number | string = number
   const abbrev = [
     ' k',
     ' Mi',
@@ -64,33 +64,33 @@ export function formatPoints(number: number): string {
     ' OctDuoMillV',
     ' NovemDuoMillV',
     ' VigintiMillV',
-    'TrigintiMillV',
-  'QuadragintiMillV',
-  'QuinquagintiMillV',
-  'SexagintiMillV',
-  'SeptuagintiMillV',
-  'OctogintiMillV',
-  'NonagintiMillV',
-  'CentumMillV',
-  'DucentumMillV',
-  'TrecentumMillV',
-  'QuadringentumMillV',
-  'QuingentumMillV',
-  'SexcentumMillV',
-  'SeptingentumMillV',
-  'OctingentumMillV',
-  'NongentumMillV',
-  'Millies',
-  'UnDuoMillies',
-  'DuoDuoMillies',
-  'TreDuoMillies',
-  'QuattuorDuoMillies',
-  'QuinDuoMillies',
-  'SexDuoMillies',
-  'SepDuoMillies',
-  'OctDuoMillies',
-  'NovemDuoMillies',
-  'VigintiMillies',
+    ' TrigintiMillV',
+    ' QuadragintiMillV',
+    ' QuinquagintiMillV',
+    ' SexagintiMillV',
+    ' SeptuagintiMillV',
+    ' OctogintiMillV',
+    ' NonagintiMillV',
+    ' CentumMillV',
+    ' DucentumMillV',
+    ' TrecentumMillV',
+    ' QuadringentumMillV',
+    ' QuingentumMillV',
+    ' SexcentumMillV',
+    ' SeptingentumMillV',
+    ' OctingentumMillV',
+    ' NongentumMillV',
+    ' Millies',
+    ' UnDuoMillies',
+    ' DuoDuoMillies',
+    ' TreDuoMillies',
+    ' QuattuorDuoMillies',
+    ' QuinDuoMillies',
+    ' SexDuoMillies',
+    ' SepDuoMillies',
+    ' OctDuoMillies',
+    ' NovemDuoMillies',
+    ' VigintiMillies',
   ]
 
   for (let i = abbrev.length - 1; i >= 0; i--) {
@@ -101,11 +101,12 @@ export function formatPoints(number: number): string {
         newNumber = 1
         i++
       }
+      newNumber = newNumber.toFixed()
       newNumber += abbrev[i]
       break
     }
   }
 
-  return newNumber
+  return String(newNumber)
 }
 
