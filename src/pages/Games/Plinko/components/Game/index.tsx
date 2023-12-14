@@ -141,14 +141,11 @@ export function Game() {
       const ballX = random(minBallX, maxBallX)
       const ballColor = ballValue <= 0 ? colors.text : colors.purple
       const ball = Bodies.circle(ballX, 20, ballConfig.ballSize, {
-        restitution: 1,
-        friction: 0.6,
+        restitution: random(1, 1.3),
+        friction: random(0.6, 0.8),
         label: `ball-${ballValue}`,
         id: new Date().getTime(),
-        frictionAir: 0.05,
-        collisionFilter: {
-          group: -1
-        },
+        frictionAir: 0.06,
         render: {
           fillStyle: ballColor
         },
@@ -161,7 +158,7 @@ export function Game() {
 
   const leftWall = Bodies.rectangle(
     worldWidth / 3 - pinsConfig.pinSize * pinsConfig.pinGap - pinsConfig.pinGap,
-    worldWidth / 2 - pinsConfig.pinSize,
+    worldWidth / 2 - pinsConfig.pinSize + 50,
     worldWidth * 2,
     40,
     {
@@ -177,7 +174,7 @@ export function Game() {
       pinsConfig.pinSize * pinsConfig.pinGap -
       pinsConfig.pinGap -
       pinsConfig.pinGap / 2,
-    worldWidth / 2 - pinsConfig.pinSize,
+    worldWidth / 2 - pinsConfig.pinSize - 30,
     worldWidth * 2,
     40,
     {

@@ -7,7 +7,7 @@ export function PlinkoGamePage() {
   const alertUser = (e: BeforeUnloadEvent) => {
     if (gamesRunning > 0) {
       e.preventDefault()
-      alert('Tu quer mermo sair feladaputa?')
+      alert('Do you really want to leave?')
       e.returnValue = ''
     }
   }

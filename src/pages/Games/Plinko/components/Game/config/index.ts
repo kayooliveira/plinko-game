@@ -1,16 +1,16 @@
 import { colors } from 'styles/colors'
 const pins = {
   startPins: 3,
-  pinSize: 2,
+  pinSize: 3,
   pinGap: 20
 }
 
 const ball = {
-  ballSize: 5.7
+  ballSize: 5
 }
 
 const engine = {
-  engineGravity: 1.0
+  engineGravity: 1
 }
 
 const world = {
